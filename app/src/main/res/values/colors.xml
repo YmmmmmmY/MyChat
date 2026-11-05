@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#0C3D78</color>
+    <color name="green">#D976EDB5</color>
+
+    <!-- 极光蓝紫风格（登录 / 注册页） -->
+    <color name="wx_text_dark">#FF1F2437</color>
+    <color name="wx_text_gray">#FF8A90A6</color>
+    <color name="wx_hint">#FFB8BDD0</color>
+    <color name="wx_purple">#FF6C5CE7</color>
+    <color name="wx_input_bg">#FFF3F1FB</color>
+    <color name="wx_input_stroke">#FFECE9F8</color>
+    <color name="wx_aurora_start">#FFD9EAFF</color>
+    <color name="wx_aurora_center">#FFC6CDF2</color>
+    <color name="wx_aurora_end">#FFE7C6F1</color>
+    <color name="wx_btn_start">#FF74B6F6</color>
+    <color name="wx_btn_end">#FFA98CF6</color>
+    <color name="wx_back">#FF2B3A55</color>
+</resources>
