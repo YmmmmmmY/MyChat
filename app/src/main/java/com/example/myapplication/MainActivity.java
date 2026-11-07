@@ -14,7 +14,6 @@ public class MainActivity extends AppCompatActivity {
 
     //保存登录传过来的数据，传给FragmentFour
     private String username;
-    private String password;
     private String avatarStr;
 
     @Override
@@ -25,7 +24,6 @@ public class MainActivity extends AppCompatActivity {
         //接收登录页面传过来Intent数据
         Intent intent = getIntent();
         username = intent.getStringExtra("username");
-        password = intent.getStringExtra("password");
         avatarStr = intent.getStringExtra("avatarIdStr");
 
 
@@ -49,7 +47,6 @@ public class MainActivity extends AppCompatActivity {
                 FragmentFour fragmentFour = new FragmentFour();
                 Bundle bundle = new Bundle();
                 bundle.putString("username", username);
-                bundle.putString("password", password);
                 bundle.putString("avatarIdStr", avatarStr);
                 fragmentFour.setArguments(bundle);
                 switchFragment(fragmentFour);

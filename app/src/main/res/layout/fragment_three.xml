@@ -78,12 +78,11 @@
         android:textSize="12sp" />
 
     <!-- 新闻列表 -->
-    <ListView
-        android:id="@+id/lvShowNews"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView_news"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="8dp"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:clipToPadding="false" />
 
 </LinearLayout>

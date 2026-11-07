@@ -5,14 +5,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.myapplication.BuildConfig;
 import com.example.myapplication.UI.New;
 import com.example.myapplication.NewsContentActivity;
 import com.example.myapplication.R;
@@ -35,8 +37,9 @@ public class FragmentThree extends Fragment {
     private static final String ARG_PARAM2 = "param2";
 
     // 天行网「综合新闻」接口地址：num=5 返回 5 条，rand=1 保证每次请求随机不同
+    // Key 来自 BuildConfig（由 local.properties 注入，不入库）
     private static final String NEWS_URL =
-            "https://apis.tianapi.com/generalnews/index?key=6eeb5bf0e6ec370bde0a787e5b6e1efa&num=5&rand=1";
+            "https://apis.tianapi.com/generalnews/index?key=" + BuildConfig.TIAN_API_KEY + "&num=5&rand=1";
 
     private String mParam1;
     private String mParam2;
@@ -45,9 +48,9 @@ public class FragmentThree extends Fragment {
     private Button btStringNews;
     private Button btListNews;
     private TextView tvShowString;
-    private ListView lvShowNews;
+    private RecyclerView recyclerViewNews;
 
-    // 新闻数据列表：ListView 与点击跳转共用同一份引用
+    // 新闻数据列表：RecyclerView 与点击跳转共用同一份引用
     private final List<New.ResultBean.NewslistBean> newsList = new ArrayList<>();
 
     // 复用同一个 OkHttpClient（含连接池），避免每次请求都重建
@@ -92,24 +95,14 @@ public class FragmentThree extends Fragment {
         btStringNews = view.findViewById(R.id.btStringNews);
         btListNews = view.findViewById(R.id.btListNews);
         tvShowString = view.findViewById(R.id.tvShowString);
-        lvShowNews = view.findViewById(R.id.lvShowNews);
+        recyclerViewNews = view.findViewById(R.id.recyclerView_news);
+        recyclerViewNews.setLayoutManager(new LinearLayoutManager(requireContext()));
 
         // 任务4：发送 GET 请求，把返回的 JSON 字符串原样显示在文本框
         btStringNews.setOnClickListener(v -> fetchRawJson());
 
-        // 任务5/6/7：Gson 解析 JSON -> News 列表 -> 适配器 -> ListView
+        // 任务5/6/7：Gson 解析 JSON -> News 列表 -> 适配器 -> RecyclerView
         btListNews.setOnClickListener(v -> fetchAndShowNews());
-
-        // 任务8：点击某条新闻，携带标题与链接跳转到 WebView 详情页
-        lvShowNews.setOnItemClickListener((parent, itemView, position, id) -> {
-            New.ResultBean.NewslistBean item = newsList.get(position);
-            String url = item.getUrl();
-            if (url == null || url.isEmpty()) {
-                Toast.makeText(requireContext(), "该新闻没有可用链接", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            NewsContentActivity.start(requireContext(), item.getTitle(), url);
-        });
 
         return view;
     }
@@ -131,7 +124,7 @@ public class FragmentThree extends Fragment {
         });
     }
 
-    // ========== 任务5/6/7：请求 + Gson 解析 -> News 列表 -> ListView ==========
+    // ========== 任务5/6/7：请求 + Gson 解析 -> News 列表 -> RecyclerView ==========
     private void fetchAndShowNews() {
         Request request = new Request.Builder().url(NEWS_URL).build();
         httpClient.newCall(request).enqueue(new Callback() {
@@ -160,8 +153,15 @@ public class FragmentThree extends Fragment {
                     tvShowString.setText("共获取到 " + list.size() + " 条新闻");
                     newsList.clear();
                     newsList.addAll(list);
-                    NewAdapter adapter = new NewAdapter(requireContext(), newsList);
-                    lvShowNews.setAdapter(adapter);
+                    NewAdapter adapter = new NewAdapter(requireContext(), newsList, item -> {
+                        String url = item.getUrl();
+                        if (url == null || url.isEmpty()) {
+                            Toast.makeText(requireContext(), "该新闻没有可用链接", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        NewsContentActivity.start(requireContext(), item.getTitle(), url);
+                    });
+                    recyclerViewNews.setAdapter(adapter);
                 });
             }
         });

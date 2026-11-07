@@ -40,11 +40,9 @@ public class FragmentFour extends Fragment {
         //取出MainActivity传递过来登录数据
         Bundle bundle = getArguments();
         String username = null;
-        String password = null;
         String avatarStr = null;
         if(bundle != null){
             username = bundle.getString("username");
-            password = bundle.getString("password");
             avatarStr = bundle.getString("avatarIdStr");
         }
 
@@ -65,7 +63,6 @@ public class FragmentFour extends Fragment {
 
         //欢迎账号信息
         tvWelcome.setText("欢迎回来，" + username);
-//        tvInfo.setText("您的账号信息：\n用户名：" + username + "\n密码：" + password);
 
 
 

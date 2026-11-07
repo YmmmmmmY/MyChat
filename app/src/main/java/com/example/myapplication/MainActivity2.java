@@ -8,7 +8,6 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -123,7 +122,6 @@ public class MainActivity2 extends AppCompatActivity {
             String avatarRes = userSp.getString(latest + "_avatar", "");
             Intent intent = new Intent(MainActivity2.this, MainActivity.class);
             intent.putExtra("username", latest);
-            intent.putExtra("password", userSp.getString(latest + "_pwd", ""));
             intent.putExtra("avatarIdStr", avatarRes);
             startActivity(intent);
             finish();
@@ -170,15 +168,13 @@ public class MainActivity2 extends AppCompatActivity {
             }else{
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.remove("Login_Name");
-                editor.remove("Login_Pass");
                 editor.putBoolean("isSave",false);
                 editor.apply();
             }
 
-            // 把用户名、密码、头像资源ID一起传给MainActivity主页
+            // 把用户名、头像资源ID一起传给MainActivity主页（密码不再明文传递）
             Intent intent = new Intent(MainActivity2.this, MainActivity.class);
             intent.putExtra("username", LoginName);
-            intent.putExtra("password", LoginPass);
             intent.putExtra("avatarIdStr", avatarRes);
             startActivity(intent);
             finish();
@@ -188,8 +184,8 @@ public class MainActivity2 extends AppCompatActivity {
     public void saveUserInfo(String username, String password)
     {
         SharedPreferences.Editor editor = sharedPreferences.edit();
+        // 仅记住用户名，不持久化明文密码（避免密码以明文落盘）
         editor.putString("Login_Name",username);
-        editor.putString("Login_Pass",password);
         editor.putBoolean("isSave",true);
         editor.apply();
     }
@@ -197,9 +193,7 @@ public class MainActivity2 extends AppCompatActivity {
     public void loadUserInfo()
     {
         String name = sharedPreferences.getString("Login_Name","");
-        String pwd = sharedPreferences.getString("Login_Pass","");
         etUsername.setText(name);
-        etPassword.setText(pwd);
     }
 
     // 根据存储的头像字符串（资源ID 或 "file:/路径"）显示对应账号的头像
